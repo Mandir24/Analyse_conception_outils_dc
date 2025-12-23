@@ -7,3 +7,6 @@ WTForms
 # Traitement de données
 pandas
 numpy
+
+# deploiement
+gunicorn
