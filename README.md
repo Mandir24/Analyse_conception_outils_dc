@@ -15,7 +15,7 @@ Application web d'analyse mondiale de la performance universitaire basée sur le
 
 ```bash
 # Cloner le repository
-git clone https://github.com/EkiaND/analyse-et-conception-outil-decisionnel.git
+git clone https://github.com/Mandir24/Analyse_conception_outils_dc.git
 cd analyse-et-conception-outil-decisionnel
 
 # Créer un environnement virtuel (recommandé)
