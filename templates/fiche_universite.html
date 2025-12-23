@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Fiche de {{ universite.nom_univ }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="container">
+       <h1 class="bi bi-bar-chart-fill me-2"> Analyse détaillée de performance Universitaire </h1> 
+        <p class="lead">Évaluation du Rang Mondial et de l'impact socio-économique des pays.</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    
+    {# Section 1: Titre et Rang #}
+    <section class="text-center mb-5">
+        <p class="rang-title mb-1">
+            <i class="bi bi-trophy-fill me-2"></i> Rang Mondial Actuel: <span class="badge bg-danger fs-5">#{{ classement.rang }}</span>
+        </p>
+        <h1 class="display-4 fw-bold mb-1">{{ universite.nom_univ }}</h1>
+        <p class="lead text-muted">{{ pays.nom_pays }}, {{ region.nom_region }}</p>
+        <a href="{{ url_for('universites') }}" class="btn btn-sm btn-outline-secondary mt-3"><i class="bi bi-arrow-left me-1"></i> Retour au Classement</a>
+    </section>
+
+    {# Section 2: KIPs (4 colonnes) #}
+    <section class="card shadow-sm mb-5">
+        <div class="row row-cols-2 row-cols-md-4 g-0">
+            
+            {# KPI 1: PIB HABITANT (Pays) #}
+            <div class="col kpi-block">
+                <span class="kpi-value text-success">{{ pays.pib_hab | default(0) | round(0) if pays.pib_hab is not none else '-' }} $</span>
+                <p class="kpi-label">PIB HABITANT (PAYS)</p>
+            </div>
+            
+            {# KPI 2: ALPHABÉTISATION (Pays) #}
+            <div class="col kpi-block">
+                <span class="kpi-value">{{ pays.alphabetisation_pct | default(0) | round(1) if pays.alphabetisation_pct is not none else '-' }} %</span>
+                <p class="kpi-label">ALPHABÉTISATION (PAYS)</p>
+            </div>
+            
+            {# KPI 3: ENSEIGNEMENT (Université) #}
+            <div class="col kpi-block">
+                <span class="kpi-value text-info">{{ classement.indic_enseig | default(0) | round(1) if classement.indic_enseig is not none else '-' }}</span>
+                <p class="kpi-label">SCORE ENSEIGNEMENT</p>
+            </div>
+            
+            {# KPI 4: RECHERCHE (Université) #}
+            <div class="col kpi-block">
+                <span class="kpi-value text-success">{{ classement.indic_qualite_rech | default(0) | round(1) if classement.indic_qualite_rech is not none else '-' }}</span>
+                <p class="kpi-label">SCORE RECHERCHE</p>
+            </div>
+        </div>
+    </section>
+
+    {# Section 3: Graphique Historique & Storytelling #}
+    <section class="mb-5">
+        <h2 class="border-bottom pb-2 mb-4 text-secondary"><i class="bi bi-graph-up-arrow me-2"></i> Évolution des Performances (Scores Historiques)</h2>
+        
+        <div class="card shadow">
+            <div class="card-body">
+                <canvas id="chartEvolutionScores"></canvas>
+            </div>
+            <div class="card-footer bg-light">
+                <h5 class="card-title text-secondary"><i class="bi bi-chat-dots me-1"></i> Analyse de Tendance :</h5>
+                <p class="card-text p-2">{{ story | safe }}</p>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    {# Section 4: Indicateurs Détaillés (Tableau récapitulatif) #}
+    <section class="mb-5">
+        <h2 class="border-bottom pb-2 mb-4 text-secondary"><i class="bi bi-clipboard-data-fill me-2"></i> Tableau de Bord Détaillé ({{ classement.annee }})</h2>
+
+        <div class="row g-4">
+            
+            {# Détails de l'Université #}
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-building-check me-2"></i> Indicateurs Internes ({{ universite.nom_univ }})</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Score Global :
+                            <span class="fw-bold badge bg-primary">{{ classement.score_global | default(0) | round(1) if classement.score_global is not none else '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Indicateur Enseignement :
+                            <span class="fw-bold badge bg-info">{{ classement.indic_enseig | default(0) | round(1) if classement.indic_enseig is not none else '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Qualité Recherche :
+                            <span class="fw-bold badge bg-success">{{ classement.indic_qualite_rech | default(0) | round(1) if classement.indic_qualite_rech is not none else '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Environnement Recherche :
+                            <span class="fw-bold badge bg-warning text-dark">{{ classement.indic_env_rech | default(0) | round(1) if classement.indic_env_rech is not none else '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex  justify-content-between align-items-center">
+                            % Étudiants Internationaux :
+                            <span class="fw-bold badge bg-secondary">{{ classement.etud_internationaux_pct | default(0) | round(1) if classement.etud_internationaux_pct is not none else '-' }} %</span>
+                        </li>
+                        
+                        <li class="list-group-item d-flex  justify-content-between align-items-center">
+                         
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                    Ratio F/H :
+                                {% if classement.ratio_fem is none or classement.ratio_hom is none %}
+                                    <span class="badge bg-danger">Indisponible</span>
+                                {% endif %}
+                            </div>
+
+                            {# si les données existent #}
+                            {% if classement.ratio_fem is not none and classement.ratio_hom is not none %}
+                                <div class="mixite-container">
+                                    <div class="progress progress-mixite">
+                                        <div class="progress-bar bg-danger" role="progressbar" 
+                                            style="width: {{ classement.ratio_fem }}%" 
+                                            title="Femmes: {{ classement.ratio_fem }}%"></div>
+                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                            style="width: {{ classement.ratio_hom }}%" 
+                                            title="Hommes: {{ classement.ratio_hom }}%"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-1 small fw-bold">
+                                        <span class="text-danger">{{ classement.ratio_fem | round | int }}% F</span>
+                                        <span class="text-muted">/</span>
+                                        <span class="text-primary">{{ classement.ratio_hom | round | int }}% H</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {# Détails du Pays #}
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header" style="background-color: var(--castleton-dark); color: white;">
+                        <h5 class="mb-0 text-white"><i class="bi bi-geo-alt-fill me-2"></i> Contexte Socio-économique ({{ pays.nom_pays }})</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Région :
+                            <span class="fw-bold">{{ region.nom_region }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            PIB par Habitant (USD) :
+                            <span class="fw-bold text-success">{{ pays.pib_hab | default(0) | round(0) if pays.pib_hab is not none else '-' }} $</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Taux d'Alphabétisation :
+                            <span class="fw-bold badge bg-success bg-opacity-50">{{ pays.alphabetisation_pct | default(0) | round(1) if pays.alphabetisation_pct is not none else '-' }} %</span>
+                        </li>
+                        
+                        
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Migration Nette :
+                            <span class="fw-bold badge bg-info bg-opacity-90">{{ pays.migration_nette | default(0) | round(2) if pays.migration_nette is not none else '-' }}</span>
+                        </li>
+
+                        
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Bouton de retour au classement #}
+     <section class="text-center mb-5">
+        <a href="{{ url_for('universites') }}" class="btn btn-lg btn-outline-secondary mt-3"><i class="bi bi-arrow-left me-1"></i> Retour au Classement</a>
+    </section>
+    
+    {# Remonter en Haut #}
+    <button id="scrollToTopBtn" title="Remonter en haut">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const historiqueData = {{ historique_data | tojson | default('{}') | safe }};
+        const ctx = document.getElementById('chartEvolutionScores').getContext('2d');
+        
+        if (historiqueData.labels && historiqueData.labels.length > 0) {
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: historiqueData.labels,
+                    datasets: [
+                        {
+                            label: 'Score Global',
+                            data: historiqueData.data_global,
+                            borderColor: '#0d6efd', /* primary */
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: 'Enseignement',
+                            data: historiqueData.data_enseig,
+                            borderColor: '#0dcaf0', /* info */
+                            backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: 'Recherche',
+                            data: historiqueData.data_rech,
+                            borderColor: '#198754', /* success */
+                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparaison de l\'Évolution des Scores par Année'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Score (0-100)'
+                            },
+                            min: 0, 
+                            max: 100,
+                            ticks: {
+                                stepSize: 10 
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Année'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

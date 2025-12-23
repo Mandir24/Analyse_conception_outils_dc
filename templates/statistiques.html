@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Statistiques - World-Univ-Rank{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-bar-chart-line me-2"></i>Statistiques</h1>
+        <p class="lead">Analyses des correlations socio-economiques et performances universitaires</p>
+    </div>
+</div>
+
+
+<div class="container my-5">
+
+<!-- A - Internationalisation et Performance en Recherche -->
+<section class="mb-5">
+    <div class="section-header">
+        <h2><i class="bi bi-globe2 me-2"></i>A - Internationalisation et Performance en Recherche</h2>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Lien entre % d'etudiants internationaux et qualite de la recherche</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartInternational"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100 bg-castleton-light">
+                <div class="card-body">
+                    <h5 class="text-castleton"><i class="bi bi-lightbulb me-2"></i>Storytelling</h5>
+                    <div class="storytelling border-0 bg-transparent p-0">
+                        Les universites avec un <strong>pourcentage eleve d'etudiants internationaux (30%+)</strong> 
+                        obtiennent en moyenne de meilleurs scores en recherche.
+                        <br><br>
+                        Cette correlation suggere que l'<strong>ouverture internationale</strong> favorise 
+                        les echanges de connaissances, les collaborations scientifiques et l'excellence academique.
+                        <br><br>
+                        Les etablissements les plus attractifs attirent naturellement les meilleurs talents mondiaux.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- B - Richesse des Pays et Qualite de l'Enseignement -->
+<section class="mb-5">
+    <div class="section-header">
+        <h2><i class="bi bi-currency-dollar me-2"></i>B - Richesse des Pays et Qualite de l'Enseignement</h2>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 order-lg-2">
+            <div class="card shadow-sm h-100 bg-castleton-light">
+                <div class="card-body">
+                    <h5 class="text-castleton"><i class="bi bi-lightbulb me-2"></i>Storytelling</h5>
+                    <div class="storytelling border-0 bg-transparent p-0">
+                        Les pays a <strong>haut PIB/habitant (≥4496$)</strong> presentent des scores 
+                        d'enseignement et de recherche significativement superieurs.
+                        <br><br>
+                        L'<strong>investissement economique</strong> dans l'education semble directement 
+                        correle a la qualite des institutions universitaires.
+                        <br><br>
+                        Les pays a faible revenu font face a des defis structurels limitant leur 
+                        capacite a developper des universites de rang mondial.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 order-lg-1">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Lien entre PIB/habitant et performances universitaires</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartPIB"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- C - Alphabetisation et Score Global -->
+<section class="mb-5">
+    <div class="section-header">
+        <h2><i class="bi bi-book me-2"></i>C - Alphabetisation et Score Global</h2>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Role du taux d'alphabetisation sur le Top 100 mondial</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartAlpha"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100 bg-castleton-light">
+                <div class="card-body">
+                    <h5 class="text-castleton"><i class="bi bi-lightbulb me-2"></i>Storytelling</h5>
+                    <div class="storytelling border-0 bg-transparent p-0">
+                        La repartition des universites du <strong>Top 100</strong> montre une forte 
+                        concentration dans les pays a taux d'alphabetisation eleve <strong>(>90%)</strong>.
+                        <br><br>
+                        Une <strong>base educative solide</strong> au niveau de la population generale 
+                        semble etre un prerequis pour l'excellence universitaire.
+                        <br><br>
+                        Les pays ou l'education est universellement accessible produisent davantage 
+                        d'elites academiques capables d'integrer les meilleures universites.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- D - Ratio F/H et Score d'Enseignement -->
+<section class="mb-5">
+    <div class="section-header">
+        <h2><i class="bi bi-people me-2"></i>D - Ratio Femmes/Hommes et Score d'Enseignement</h2>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 order-lg-2">
+            <div class="card shadow-sm h-100 bg-castleton-light">
+                <div class="card-body">
+                    <h5 class="text-castleton"><i class="bi bi-lightbulb me-2"></i>Storytelling</h5>
+                    <div class="storytelling border-0 bg-transparent p-0">
+                        Les universites avec une <strong>mixite equilibree (40-60% de femmes)</strong> 
+                        obtiennent en moyenne de meilleurs scores en enseignement et recherche.
+                        <br><br>
+                        La <strong>diversite de genre</strong> semble contribuer positivement a la 
+                        qualite pedagogique et a l'innovation scientifique.
+                        <br><br>
+                        Les environnements inclusifs favorisent un meilleur climat d'apprentissage 
+                        et une plus grande richesse des perspectives.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 order-lg-1">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Influence du ratio femmes/hommes sur les indicateurs</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartRatio"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- E - Scores par Region -->
+<section class="mb-5">
+    <div class="section-header">
+        <h2><i class="bi bi-map me-2"></i>E - Comparaison des Scores par Region</h2>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Scores moyens des universites par region geographique</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartRegion" style="max-height: 400px;"></canvas>
+                </div>
+                <div class="card-footer">
+                    <div class="storytelling">
+                        <strong>Analyse regionale :</strong> L'Amerique du Nord et l'Europe de l'Ouest dominent les classements 
+                        avec des scores significativement superieurs dans toutes les categories. L'Asie montre une progression 
+                        remarquable, notamment grace aux investissements massifs dans l'education superieure en Chine, 
+                        Singapour et Coree du Sud.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const castletonGreen = '#00563F';
+const castletonLight = '#007A5A';
+
+// Donnees pre-calculees depuis le serveur
+const dataIntern = {{ data_intern|tojson }};
+const dataPib = {{ data_pib|tojson }};
+const dataAlpha = {{ data_alpha|tojson }};
+const dataRatio = {{ data_ratio|tojson }};
+const dataRegion = {{ data_region|tojson }};
+
+// A - Graphique Internationalisation - Utilisation d'une fonction custom basee sur createGroupedBarChart
+const ctxIntern = document.getElementById('chartInternational');
+if (ctxIntern) {
+    new Chart(ctxIntern, {
+        type: 'bar',
+        data: {
+            labels: dataIntern.map(d => d.classe),
+            datasets: [{
+                label: 'Score recherche moyen',
+                data: dataIntern.map(d => d.score),
+                backgroundColor: colorPalette,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Score moyen de recherche par classe d\'etudiants internationaux' }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 100, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+// B - Graphique PIB - Utilisation de createGroupedBarChart
+createGroupedBarChart(
+    'chartPIB',
+    dataPib.map(d => d.classe),
+    [
+        { label: 'Enseignement', data: dataPib.map(d => d.enseignement), color: '#2563EB' },
+        { label: 'Recherche', data: dataPib.map(d => d.recherche), color: '#10B981' }
+    ]
+);
+
+// C - Graphique Alphabetisation (Pie) - Utilisation de createPieChart
+createPieChart(
+    'chartAlpha',
+    dataAlpha.map(d => d.classe),
+    dataAlpha.map(d => d.count),
+    'pie'
+);
+
+// D - Graphique Ratio F/H - Utilisation de createGroupedBarChart
+createGroupedBarChart(
+    'chartRatio',
+    dataRatio.map(d => d.classe),
+    [
+        { label: 'Enseignement', data: dataRatio.map(d => d.enseignement), color: '#6F42C1' },
+        { label: 'Recherche', data: dataRatio.map(d => d.recherche), color: '#E83E8C' }
+    ]
+);
+
+// E - Graphique Regions - Utilisation de createGroupedBarChart
+createGroupedBarChart(
+    'chartRegion',
+    dataRegion.map(d => d.region),
+    [
+        { label: 'Enseignement', data: dataRegion.map(d => d.enseignement), color: castletonGreen },
+        { label: 'Recherche', data: dataRegion.map(d => d.recherche), color: castletonLight },
+        { label: 'Score Global', data: dataRegion.map(d => d.global), color: '#17A2B8' }
+    ]
+);
+</script>
+{% endblock %}

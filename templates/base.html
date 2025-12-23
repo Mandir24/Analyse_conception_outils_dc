@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> {% block title %} Système World-Univ-Rank {% endblock %}</title> 
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS personnalise -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+
+    <!-- Style ajouté pour maintenir le footer en bas de page  -->
+    <style>
+      body {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          margin: 0;
+      }
+      .flex-grow-1 {
+          flex: 1;
+      }
+    </style>
+  </head> 
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+                <i class="bi bi-mortarboard-fill me-2"></i>World-Univ-Rank
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="bi bi-house-door me-1"></i>Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'universites' %}active{% endif %}" href="{{ url_for('universites') }}">
+                            <i class="bi bi-building me-1"></i>Universites
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'statistiques' %}active{% endif %}" href="{{ url_for('statistiques') }}">
+                            <i class="bi bi-bar-chart-line me-1"></i>Statistiques
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+    <div class="flex-grow-1">
+        <!-- Bloc de contenu spécifique à chaque page -->
+        {% block content %}{% endblock %}
+    </div>
+    
+  <!-- FOOTER -->
+  <footer class="bg-success text-dark text-center py-3 mt-4">
+    <p class="mb-1">
+        © 2025 - Système World-Univ-Rank
+    </p>
+    <p class="mb-1">
+        Auteurs : Mandir Diop, Romain Lesueur, Sacha Ucendo, Anthony Yon
+    </p>
+    <p>
+        <!-- <a href="IL FAUT AJOUTER ICI LE LIEN DU DÉPÔT GITHUB" class="text-white" target="_blank"> Dépôt GitHub </a> -->
+    </p>
+  </footer>
+
+   <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+   <!-- Custom Chart.js utilities -->
+   <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+
+   <!-- Bloc pour scripts supplémentaires des pages enfants -->
+   {% block extra_js %}{% endblock %}
+
+  </body>
+
+</html>

@@ -1,0 +1,9 @@
+# Framework Web
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+
+# Traitement de données
+pandas
+numpy
