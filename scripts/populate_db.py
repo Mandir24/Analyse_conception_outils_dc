@@ -7,7 +7,7 @@ from pathlib import Path
 # Ajout du repertoire parent au path pour les imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from application import create_app
+from Test.application import create_app
 from models import db, Region, Pays, Universite, Classement
 from config import Config
 

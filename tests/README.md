@@ -43,7 +43,7 @@ L'objectif : comprendre ce qui distingue les systèmes universitaires d'excellen
 
 ---
 
-## 🗂️ Structure du projet
+##  Structure du projet
 
 ```
 Analyse_conception_outils_dc/
@@ -101,7 +101,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-## 🚀 Lancer l'application
+##  Lancer l'application
 
 ```bash
 # 1. Cloner le dépôt
@@ -121,7 +121,7 @@ python application.py
 
 ---
 
-## 📦 Dépendances
+##  Dépendances
 
 | Paquet | Version | Usage |
 |---|---|---|
@@ -141,10 +141,9 @@ pip install -r requirements.txt
 
 ---
 
-## 🧪 Tests — SAÉ S6
+##  Tests — SAÉ S6
 
-> Tests réalisés individuellement par **Mandir Diop**.  
-> Distincts des tests de Sacha, Anthony et Romain (aucune répétition).
+> Tests réalisés individuellement : **Mandir Diop**.  
 
 ### Structure
 
@@ -158,7 +157,7 @@ tests/
 
 ---
 
-### 🔬 Unitaires (`test_unit.py`) — sans BDD
+###  Unitaires (`test_unit.py`) — sans BDD
 
 Fonctions testées directement, sans aucune base de données ni route HTTP.
 
@@ -175,7 +174,7 @@ pytest tests/test_unit.py -v
 
 ---
 
-### 🔗 Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
+###  Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
 
 Requêtes ORM testées directement sur la BDD, sans passer par HTTP.
 
@@ -192,7 +191,7 @@ pytest tests/test_integration.py -v
 
 ---
 
-### 🌐 Système (`test_system.py`) — end-to-end via client HTTP
+###  Système (`test_system.py`) — end-to-end via client HTTP
 
 Routes testées de bout en bout : requête HTTP → ORM → rendu Jinja2 → réponse HTML.
 
@@ -209,7 +208,7 @@ pytest tests/test_system.py -v
 
 ---
 
-### ▶️ Lancer tous les tests + couverture
+###  Lancer tous les tests + couverture
 
 ```bash
 # Tous les tests

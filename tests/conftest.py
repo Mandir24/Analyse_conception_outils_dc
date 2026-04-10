@@ -4,7 +4,7 @@ conftest.py — Fixtures partagées pour les tests (unit, integration, system).
 Toutes les fixtures sont centralisées ici conformément aux consignes SAÉ S6.
 Ces tests sont distincts de ceux réalisés par Sacha, Anthony et Romain.
 
-Auteur : <Ton nom>
+Auteur : Mandir Diop
 """
 
 import pytest
@@ -14,12 +14,12 @@ import os
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
 
-from Test.application import create_app
-from Test.models import db as _db
-from Test.models.region import Region
-from Test.models.pays import Pays
-from Test.models.universite import Universite
-from Test.models.classement import Classement
+from application import create_app
+from models import db as _db
+from models.region import Region
+from models.pays import Pays
+from models.universite import Universite
+from models.classement import Classement
 
 
 # ============================================================
@@ -27,29 +27,24 @@ from Test.models.classement import Classement
 # ============================================================
 
 @pytest.fixture
-def classement_avec_ratio():
+def ratio_fem_hom_valide():
     """
-    Objet Classement non persisté avec ratio_fem=60 et ratio_hom=40.
-    Utilisé pour tester le filtre Jinja2 format_ratio_pct (défini dans create_app()).
-    Ce filtre est appelé dans le template fiche_universite.html.
+    Dictionnaire simulant les champs ratio_fem et ratio_hom d'un Classement.
+    Utilisé pour tester la logique du filtre format_ratio_pct sans SQLAlchemy.
+    Le filtre est défini dans create_app() → application.py et appelé dans
+    le template fiche_universite.html.
     """
-    c = Classement.__new__(Classement)
-    c.ratio_fem = 60.0
-    c.ratio_hom = 40.0
-    return c
+    return {"ratio_fem": 60.0, "ratio_hom": 40.0}
 
 
 @pytest.fixture
-def classement_sans_ratio():
+def ratio_fem_hom_none():
     """
-    Objet Classement non persisté avec ratio_fem=None et ratio_hom=None.
+    Dictionnaire simulant les champs ratio_fem=None et ratio_hom=None.
     Permet de tester le cas où les données sont absentes du CSV.
     Le filtre format_ratio_pct doit retourner '-' dans ce cas.
     """
-    c = Classement.__new__(Classement)
-    c.ratio_fem = None
-    c.ratio_hom = None
-    return c
+    return {"ratio_fem": None, "ratio_hom": None}
 
 
 # ============================================================
@@ -60,7 +55,7 @@ def classement_sans_ratio():
 def app_test():
     """
     Instance Flask configurée en mode testing avec BDD SQLite en mémoire.
-    Légère et isolée entre chaque test fonction.
+    Légère et isolée entre chaque test.
     """
     app = create_app("testing")
     app.config.update({
@@ -79,7 +74,6 @@ def app_test():
 def db_session(app_test):
     """
     Session SQLAlchemy active pour les tests d'intégration.
-    Permet d'interroger la BDD sans passer par HTTP.
     """
     with app_test.app_context():
         yield _db.session
@@ -93,7 +87,6 @@ def db_session(app_test):
 def client(app_test):
     """
     Client HTTP Flask pour les tests système.
-    Simule des requêtes GET sur les routes de l'application.
     """
     return app_test.test_client()
 

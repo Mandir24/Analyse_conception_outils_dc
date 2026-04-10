@@ -14,10 +14,10 @@ Auteur : <Ton nom>
 """
 
 import pytest
-from Test.models import db
-from Test.models.classement import Classement
-from Test.models.pays import Pays
-from Test.models.universite import Universite
+from models import db
+from models.classement import Classement
+from models.pays import Pays
+from models.universite import Universite
 
 
 # ============================================================

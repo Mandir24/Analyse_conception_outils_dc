@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from config import config 
-from models import db, Region, Pays, Universite, Classement 
+from models import db, Region, Pays, Universite, Classement
 import os
 import binascii
 from sqlalchemy import and_, func, case

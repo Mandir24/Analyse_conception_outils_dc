@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Importations des modules locaux
-from application import create_app
+from Test.application import create_app
 from models import Region, Pays, Universite, Classement, db
 from config import Config 
 
