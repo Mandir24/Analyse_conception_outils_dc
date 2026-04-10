@@ -43,7 +43,7 @@ L'objectif : comprendre ce qui distingue les systèmes universitaires d'excellen
 
 ---
 
-##  Structure du projet
+## 📁 Structure du projet
 
 ```
 Analyse_conception_outils_dc/
@@ -65,17 +65,17 @@ Analyse_conception_outils_dc/
 │
 ├── templates/              # Pages HTML (Jinja2 + Bootstrap)
 │   ├── base.html
-│   ├── index.html          # Accueil : KPI + graphiques + Top 10
-│   ├── universités.html    # Recherche filtrable + Top/Bottom 5
-│   ├── fiche_universite.html # Fiche détaillée + storytelling
-│   ├── statistiques.html   # Graphiques socio-économiques
+│   ├── index.html
+│   ├── universités.html
+│   ├── fiche_universite.html
+│   ├── statistiques.html
 │   ├── 404.html
 │   └── 500.html
 │
 ├── static/                 # CSS et JS
 ├── data/                   # Fichiers CSV source
 │
-└── tests/                  # ← Suite de tests (SAÉ Semestre 6 : Développement et test d'un outil décisionnel)
+└── tests/
     ├── conftest.py
     ├── test_unit.py
     ├── test_integration.py
@@ -84,11 +84,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-##  Stack technique
-
-<div align="center">
-  <img src="https://skillicons.dev/icons?i=python,flask,sqlite,html,css,js,github,vscode&theme=dark"/>
-</div>
+## ⚙️ Stack technique
 
 | Couche | Technologie |
 |---|---|
@@ -101,7 +97,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-##  Lancer l'application
+## 🚀 Lancer l'application
 
 ```bash
 # 1. Cloner le dépôt
@@ -121,7 +117,7 @@ python application.py
 
 ---
 
-##  Dépendances
+## 📦 Dépendances
 
 | Paquet | Version | Usage |
 |---|---|---|
@@ -141,91 +137,95 @@ pip install -r requirements.txt
 
 ---
 
-##  Tests — SAÉ S6
+## 🧪 Tests — SAÉ S6
 
-> Tests réalisés individuellement : **Mandir Diop**.  
+> Tests réalisés individuellement par **Mandir Diop**.
+> Distincts des tests de Sacha, Anthony et Romain (aucune répétition).
 
 ### Structure
 
 ```
 tests/
-├── conftest.py          # Toutes les fixtures (BDD SQLite en mémoire + données CSV échantillon)
-├── test_unit.py         # Tests unitaires — sans BDD
-├── test_integration.py  # Tests d'intégration — BDD SQLite, sans routes
-└── test_system.py       # Tests système — end-to-end via client HTTP
+├── conftest.py          # Fixtures : BDD SQLite en mémoire + données échantillon
+├── test_unit.py         # 2 tests unitaires — sans BDD, sans routes
+├── test_integration.py  # 2 tests d'intégration — BDD SQLite, sans routes
+└── test_system.py       # 2 tests système — end-to-end via client HTTP
 ```
 
 ---
 
-###  Unitaires (`test_unit.py`) — sans BDD
+### 🔬 Unitaires (`test_unit.py`) — sans BDD
 
-Fonctions testées directement, sans aucune base de données ni route HTTP.
+Logique du filtre Jinja2 `format_pib` testée directement, sans base de données ni route HTTP.
 
 | # | Fonction testée | Fichier source | Ce qui est vérifié |
 |---|---|---|---|
-| 1 | Filtre Jinja2 `format_ratio_pct` | `application.py` | `ratio_fem=60, ratio_hom=40` → `"60% F / 40% H"` |
-| 2 | Filtre Jinja2 `format_ratio_pct` | `application.py` | `ratio_fem=None` → retourne `"-"` sans erreur |
-| 3 | `Universite.to_dict()` | `models/universite.py` | Le dictionnaire contient les clés `id_universite` et `nom_univ` |
-| 4 | `Universite.to_dict()` | `models/universite.py` | La valeur `nom_univ` est bien celle de l'objet |
+| 1 | Filtre `format_pib` | `application.py` | `46510.0` → `"46 510 $"` (séparateur milliers + symbole $) |
+| 2 | Filtre `format_pib` | `application.py` | `1000000` → `"1 000 000 $"` (plusieurs séparateurs de milliers) |
 
 ```bash
 pytest tests/test_unit.py -v
 ```
 
+**Pourquoi ces 2 cas ?**
+Le cas 1 valide le comportement nominal avec un PIB réaliste (UK en données de test).
+Le cas 2 valide que la fonction gère correctement plusieurs groupes de milliers — un remplacement naïf de virgule par espace pourrait rater ce cas sur des nombres à 7+ chiffres.
+
 ---
 
-###  Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
+### 🔗 Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
 
 Requêtes ORM testées directement sur la BDD, sans passer par HTTP.
 
-| # | Comportement testé | Route source dans `application.py` | Ce qui est vérifié |
+| # | Comportement testé | Source dans `application.py` | Ce qui est vérifié |
 |---|---|---|---|
-| 1 | Requête top pays par `indic_enseig` (ORDER BY DESC) | `index()` → graphique `data_top_pays_enseig` | UK (Oxford 92.1) devance USA (MIT 91.2) |
-| 2 | Tri décroissant des scores top pays | `index()` → graphique `data_top_pays_enseig` | La liste est bien triée de haut en bas |
-| 3 | Relation ORM `Universite.classements.all()` | `fiche_universite()` → graphique d'évolution | Oxford a 2 classements en BDD (2023 + 2024) |
-| 4 | Ordre chronologique des classements | `fiche_universite()` → storytelling | Les classements sont triés par année croissante |
+| 1 | Requête top pays par `indic_enseig` (JOIN + AVG + ORDER BY DESC) | `index()` → graphique `data_top_pays_enseig` | UK (Oxford 92.1) devance USA (MIT 91.2) |
+| 2 | Relation ORM `Universite.classements.all()` triée par année | `fiche_universite()` → graphique d'évolution | Oxford a 2 classements, retournés de 2023 → 2024 |
 
 ```bash
 pytest tests/test_integration.py -v
 ```
 
+**Pourquoi ces 2 cas ?**
+Le test 1 valide une requête complexe (JOIN sur 3 tables + GROUP BY + ORDER BY) qui est au cœur du graphique page d'accueil. Si le ORDER BY saute, le graphique s'affiche dans le mauvais sens.
+Le test 2 valide la configuration de la relation ORM : si `order_by` est absent du modèle Universite, les classements arrivent dans un ordre aléatoire et le graphique d'évolution devient incohérent.
+
 ---
 
-###  Système (`test_system.py`) — end-to-end via client HTTP
+### 🌐 Système (`test_system.py`) — end-to-end via client HTTP
 
 Routes testées de bout en bout : requête HTTP → ORM → rendu Jinja2 → réponse HTML.
 
 | # | Route | Ce qui est vérifié |
 |---|---|---|
-| 1 | `GET /statistiques` | Code HTTP 200 |
-| 2 | `GET /statistiques` | Présence de `<canvas>` dans le HTML (graphiques Chart.js injectés) |
-| 3 | `GET /universite/99999` | Code HTTP 404 (id inexistant en BDD) |
-| 4 | `GET /universite/0` | Code HTTP 404 (id impossible, autoincrement commence à 1) |
+| 1 | `GET /statistiques` | Code HTTP 200 (les 4 requêtes ORM complexes s'exécutent sans erreur) |
+| 2 | `GET /statistiques` | Présence de `"United Kingdom"` dans le HTML (les données ORM arrivent bien jusqu'au template) |
 
 ```bash
 pytest tests/test_system.py -v
 ```
 
+**Pourquoi ces 2 cas ?**
+Le test 1 (code 200) valide que la route ne plante pas. Mais un 200 seul peut masquer une page vide si les données ne sont pas passées au template. Le test 2 complète en vérifiant qu'un nom de pays réel — inséré par `_seed_db()` — apparaît bien dans le HTML rendu, validant ainsi toute la chaîne ORM → Jinja2.
+
 ---
 
-###  Lancer tous les tests + couverture
+### ▶️ Lancer tous les tests + couverture
 
 ```bash
 # Tous les tests
 pytest tests/ -v
 
-# Avec rapport de couverture HTML (à déposer sur Ecampus)
+# Avec rapport de couverture HTML
 pytest tests/ --cov=. --cov-report=html -v
 # → dossier htmlcov/ généré
 ```
 
 ---
 
-###  BDD de test
+### 🗄️ BDD de test
 
 Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) peuplée par `_seed_db()` dans `conftest.py`. Aucun fichier CSV ni BDD de production n'est utilisé.
-
-Échantillon inséré :
 
 | Table | Données |
 |---|---|
@@ -247,3 +247,11 @@ Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) p
 
 ---
 
+<div align="center">
+  <i>"No matter how correct a mathematical theorem may appear to be, one ought never to be satisfied that there was not something imperfect about it until it also gives the impression of being beautiful."</i><br/>
+  <b>— George Boole</b>
+</div>
+
+<br/>
+
+<p align="center">Fait avec ❤️ par <b>Mandir Diop</b> · BUT VCOD · IUT Grand Ouest Normandie</p>

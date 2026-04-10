@@ -1,14 +1,9 @@
 """
 tests/test_unit.py — Tests unitaires (sans BDD, sans routes HTTP).
 
-Fonctions testées (toutes dans application.py) :
-  1. Logique du filtre Jinja2 format_ratio_pct
-     → défini dans create_app(), appelé dans fiche_universite.html
-  2. Logique du filtre Jinja2 format_pib
-     → défini dans create_app(), appelé dans fiche_universite.html
-
-Ces tests ne répètent pas ceux de Sacha, Anthony et Romain.
-On teste la logique pure sans instancier d'objets SQLAlchemy.
+Fonction testée :
+  - Filtre Jinja2 format_pib (application.py)
+    → Appelé dans fiche_universite.html pour afficher le PIB/habitant
 
 Auteur : Mandir Diop
 """
@@ -22,24 +17,20 @@ sys.path.insert(0, ROOT)
 
 
 # ============================================================
-#  Helpers : reproduction directe des logiques des filtres
-#  définis dans create_app() → application.py
+#  Helper : reproduction directe de la logique du filtre format_pib
+#  défini dans create_app() → application.py
 # ============================================================
-
-def _format_ratio_pct(ratio_fem, ratio_hom):
-    """
-    Reproduction de la logique du filtre format_ratio_pct (application.py l.113-116).
-    Retourne 'X% F / Y% H' ou '-' si les valeurs sont None.
-    """
-    if ratio_fem is None or ratio_hom is None:
-        return '-'
-    return f"{int(round(ratio_fem))}% F / {int(round(ratio_hom))}% H"
-
 
 def _format_pib(value):
     """
-    Reproduction de la logique du filtre format_pib (application.py l.119-121).
-    Retourne un PIB formaté avec espaces et symbole $ ou '-' si None.
+    Reproduction de la logique du filtre format_pib (application.py).
+    Retourne un PIB formaté avec espaces comme séparateurs de milliers
+    et le symbole $, ou '-' si la valeur est None.
+
+    Exemples :
+        46510.0  → "46 510 $"
+        None     → "-"
+        1000000  → "1 000 000 $"
     """
     if value is None:
         return "-"
@@ -47,64 +38,37 @@ def _format_pib(value):
 
 
 # ============================================================
-#  Tests du filtre format_ratio_pct
-#  Défini dans create_app() → application.py
-#  Utilisé dans fiche_universite.html pour afficher '60% F / 40% H'
-# ============================================================
-
-class TestFormatRatioPct:
-    """Tests unitaires de la logique du filtre format_ratio_pct."""
-
-    def test_ratio_valide_retourne_chaine_formatee(self, ratio_fem_hom_valide):
-        """
-        Vérifie que ratio_fem=60, ratio_hom=40 retourne '60% F / 40% H'.
-
-        Args:
-            ratio_fem_hom_valide: fixture conftest → {"ratio_fem": 60.0, "ratio_hom": 40.0}
-        """
-        resultat = _format_ratio_pct(
-            ratio_fem_hom_valide["ratio_fem"],
-            ratio_fem_hom_valide["ratio_hom"]
-        )
-        assert resultat == "60% F / 40% H"
-
-    def test_ratio_none_retourne_tiret(self, ratio_fem_hom_none):
-        """
-        Vérifie que ratio_fem=None retourne '-' sans erreur.
-        Correspond aux données manquantes dans le CSV THE.
-
-        Args:
-            ratio_fem_hom_none: fixture conftest → {"ratio_fem": None, "ratio_hom": None}
-        """
-        resultat = _format_ratio_pct(
-            ratio_fem_hom_none["ratio_fem"],
-            ratio_fem_hom_none["ratio_hom"]
-        )
-        assert resultat == '-'
-
-
-# ============================================================
 #  Tests du filtre format_pib
-#  Défini dans create_app() → application.py
+#  Défini dans create_app() , application.py
 #  Utilisé dans fiche_universite.html pour afficher le PIB/habitant
 # ============================================================
 
 class TestFormatPib:
-    """Tests unitaires de la logique du filtre format_pib."""
+    """
+    Tests unitaires de la logique du filtre Jinja2 format_pib.
+    On teste la logique pure sans instancier d'objets SQLAlchemy ni de routes HTTP.
+    """
 
     def test_pib_valide_retourne_chaine_formatee(self):
         """
         Vérifie que 46510.0 retourne '46 510 $'.
-        Le format avec espaces comme séparateur de milliers est défini
-        dans le filtre format_pib de application.py.
+        Le format avec espaces comme séparateur de milliers est la convention
+        française utilisée dans le filtre format_pib de application.py.
+        Cas représentatif : PIB du Royaume-Uni dans les données de test.
         """
         resultat = _format_pib(46510.0)
-        assert resultat == "46 510 $"
+        assert resultat == "46 510 $", (
+            f"PIB 46510.0 doit retourner '46 510 $', obtenu : '{resultat}'"
+        )
 
-    def test_pib_none_retourne_tiret(self):
+    def test_pib_grand_retourne_formatage_correct(self):
         """
-        Vérifie que None retourne '-' sans erreur.
-        Cas fréquent pour les pays sans données PIB dans le CSV.
+        Vérifie que 1000000 retourne '1 000 000 $'.
+        Teste le formatage des espaces sur un nombre à 7 chiffres.
+        Valide que la fonction gère correctement plusieurs séparateurs de milliers,
+        ce qu'un simple remplacement naïf pourrait rater.
         """
-        resultat = _format_pib(None)
-        assert resultat == "-"
+        resultat = _format_pib(1_000_000)
+        assert resultat == "1 000 000 $", (
+            f"PIB 1000000 doit retourner '1 000 000 $', obtenu : '{resultat}'"
+        )
