@@ -35,7 +35,7 @@
 
 ---
 
-## 📌 Présentation du projet
+## Présentation du projet
 
 **World-Univ-Rank** est une application web Flask qui analyse les données du classement **Times Higher Education (THE)** sur la période **2016–2025**, enrichies d'indicateurs socio-économiques par pays (PIB, alphabétisation, migration, etc.).
 
@@ -43,7 +43,7 @@ L'objectif : comprendre ce qui distingue les systèmes universitaires d'excellen
 
 ---
 
-## 📁 Structure du projet
+##  Structure du projet
 
 ```
 Analyse_conception_outils_dc/
@@ -75,7 +75,7 @@ Analyse_conception_outils_dc/
 ├── static/                 # CSS et JS
 ├── data/                   # Fichiers CSV source
 │
-└── tests/
+└── tests/ Test de de l'application (SAE : Développement et test d'un outil décisionnel)
     ├── conftest.py
     ├── test_unit.py
     ├── test_integration.py
@@ -84,7 +84,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-## ⚙️ Stack technique
+## Stack technique
 
 | Couche | Technologie |
 |---|---|
@@ -97,7 +97,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-## 🚀 Lancer l'application
+## Lancer l'application
 
 ```bash
 # 1. Cloner le dépôt
@@ -112,12 +112,12 @@ python scripts/populate_db.py
 
 # 4. Lancer l'application
 python application.py
-# → http://localhost:5000
+# -> http://localhost:5000
 ```
 
 ---
 
-## 📦 Dépendances
+## Dépendances
 
 | Paquet | Version | Usage |
 |---|---|---|
@@ -137,7 +137,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🧪 Tests — SAÉ S6
+##  Tests — SAÉ S6
 
 > Tests réalisés individuellement par **Mandir Diop**.
 > Distincts des tests de Sacha, Anthony et Romain (aucune répétition).
@@ -154,14 +154,14 @@ tests/
 
 ---
 
-### 🔬 Unitaires (`test_unit.py`) — sans BDD
+###  Unitaires (`test_unit.py`) — sans BDD
 
 Logique du filtre Jinja2 `format_pib` testée directement, sans base de données ni route HTTP.
 
 | # | Fonction testée | Fichier source | Ce qui est vérifié |
 |---|---|---|---|
-| 1 | Filtre `format_pib` | `application.py` | `46510.0` → `"46 510 $"` (séparateur milliers + symbole $) |
-| 2 | Filtre `format_pib` | `application.py` | `1000000` → `"1 000 000 $"` (plusieurs séparateurs de milliers) |
+| 1 | Filtre `format_pib` | `application.py` | `46510.0` -> `"46 510 $"` (séparateur milliers + symbole $) |
+| 2 | Filtre `format_pib` | `application.py` | `1000000` -> `"1 000 000 $"` (plusieurs séparateurs de milliers) |
 
 ```bash
 pytest tests/test_unit.py -v
@@ -173,14 +173,14 @@ Le cas 2 valide que la fonction gère correctement plusieurs groupes de milliers
 
 ---
 
-### 🔗 Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
+###  Intégration (`test_integration.py`) — BDD SQLite en mémoire, sans routes
 
 Requêtes ORM testées directement sur la BDD, sans passer par HTTP.
 
 | # | Comportement testé | Source dans `application.py` | Ce qui est vérifié |
 |---|---|---|---|
-| 1 | Requête top pays par `indic_enseig` (JOIN + AVG + ORDER BY DESC) | `index()` → graphique `data_top_pays_enseig` | UK (Oxford 92.1) devance USA (MIT 91.2) |
-| 2 | Relation ORM `Universite.classements.all()` triée par année | `fiche_universite()` → graphique d'évolution | Oxford a 2 classements, retournés de 2023 → 2024 |
+| 1 | Requête top pays par `indic_enseig` (JOIN + AVG + ORDER BY DESC) | `index()` -> graphique `data_top_pays_enseig` | UK (Oxford 92.1) devance USA (MIT 91.2) |
+| 2 | Relation ORM `Universite.classements.all()` triée par année | `fiche_universite()` -> graphique d'évolution | Oxford a 2 classements, retournés de 2023 -> 2024 |
 
 ```bash
 pytest tests/test_integration.py -v
@@ -192,9 +192,9 @@ Le test 2 valide la configuration de la relation ORM : si `order_by` est absent 
 
 ---
 
-### 🌐 Système (`test_system.py`) — end-to-end via client HTTP
+###  Système (`test_system.py`) — end-to-end via client HTTP
 
-Routes testées de bout en bout : requête HTTP → ORM → rendu Jinja2 → réponse HTML.
+Routes testées de bout en bout : requête HTTP -> ORM -> rendu Jinja2 -> réponse HTML.
 
 | # | Route | Ce qui est vérifié |
 |---|---|---|
@@ -206,11 +206,11 @@ pytest tests/test_system.py -v
 ```
 
 **Pourquoi ces 2 cas ?**
-Le test 1 (code 200) valide que la route ne plante pas. Mais un 200 seul peut masquer une page vide si les données ne sont pas passées au template. Le test 2 complète en vérifiant qu'un nom de pays réel — inséré par `_seed_db()` — apparaît bien dans le HTML rendu, validant ainsi toute la chaîne ORM → Jinja2.
+Le test 1 (code 200) valide que la route ne plante pas. Mais un 200 seul peut masquer une page vide si les données ne sont pas passées au template. Le test 2 complète en vérifiant qu'un nom de pays réel — inséré par `_seed_db()` — apparaît bien dans le HTML rendu, validant ainsi toute la chaîne ORM -> Jinja2.
 
 ---
 
-### ▶️ Lancer tous les tests + couverture
+###  Lancer tous les tests + couverture
 
 ```bash
 # Tous les tests
@@ -218,12 +218,12 @@ pytest tests/ -v
 
 # Avec rapport de couverture HTML
 pytest tests/ --cov=. --cov-report=html -v
-# → dossier htmlcov/ généré
+# -> dossier htmlcov/ généré
 ```
 
 ---
 
-### 🗄️ BDD de test
+###  BDD de test
 
 Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) peuplée par `_seed_db()` dans `conftest.py`. Aucun fichier CSV ni BDD de production n'est utilisé.
 
@@ -236,7 +236,7 @@ Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) p
 
 ---
 
-## 📊 Pages de l'application
+##  Pages de l'application
 
 | Page | URL | Contenu |
 |---|---|---|
@@ -247,11 +247,4 @@ Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) p
 
 ---
 
-<div align="center">
-  <i>"No matter how correct a mathematical theorem may appear to be, one ought never to be satisfied that there was not something imperfect about it until it also gives the impression of being beautiful."</i><br/>
-  <b>— George Boole</b>
-</div>
 
-<br/>
-
-<p align="center">Fait avec ❤️ par <b>Mandir Diop</b> · BUT VCOD · IUT Grand Ouest Normandie</p>
