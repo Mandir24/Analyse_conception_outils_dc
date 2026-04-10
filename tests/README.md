@@ -139,8 +139,7 @@ pip install -r requirements.txt
 
 ##  Tests — SAÉ S6
 
-> Tests réalisés individuellement par **Mandir Diop**.
-> Distincts des tests de Sacha, Anthony et Romain (aucune répétition).
+> Tests réalisés : **Mandir Diop**.
 
 ### Structure
 
