@@ -75,7 +75,7 @@ Analyse_conception_outils_dc/
 ├── static/                 # CSS et JS
 ├── data/                   # Fichiers CSV source
 │
-└── tests/                  # ← Suite de tests (SAÉ S6)
+└── tests/                  # ← Suite de tests (SAÉ Semestre 6 : Développement et test d'un outil décisionnel)
     ├── conftest.py
     ├── test_unit.py
     ├── test_integration.py
@@ -84,7 +84,7 @@ Analyse_conception_outils_dc/
 
 ---
 
-## ⚙️ Stack technique
+##  Stack technique
 
 <div align="center">
   <img src="https://skillicons.dev/icons?i=python,flask,sqlite,html,css,js,github,vscode&theme=dark"/>
@@ -221,7 +221,7 @@ pytest tests/ --cov=. --cov-report=html -v
 
 ---
 
-### 🗄️ BDD de test
+###  BDD de test
 
 Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) peuplée par `_seed_db()` dans `conftest.py`. Aucun fichier CSV ni BDD de production n'est utilisé.
 
@@ -247,10 +247,3 @@ Tous les tests utilisent une **BDD SQLite en mémoire** (`sqlite:///:memory:`) p
 
 ---
 
-<div align="center">
-  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=tokyonight" alt="Quote"/>
-</div>
-
-<p align="center">
-  <i>Fait avec ❤️ par <b>Mandir Diop</b> · BUT VCOD · IUT Grand Ouest Normandie</i>
-</p>
